@@ -1,0 +1,4 @@
+*.gz
+*.tgz
+*.tar.gz
+*.ckpt

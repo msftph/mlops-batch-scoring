@@ -52,3 +52,24 @@ resource "azurerm_machine_learning_workspace" "ml_workspace" {
     type = "SystemAssigned"
   }
 }
+
+# generate a random suffix for the storage account name
+resource "random_string" "data_storage_account_name" {
+    length  = 5
+    special = false
+    upper   = false
+}
+
+resource "azurerm_storage_account" "data_storage_account" {
+  name                     = "mlopsbatchscoredata${random_string.data_storage_account_name.result}"
+  location                 = azurerm_resource_group.default.location
+  resource_group_name      = azurerm_resource_group.default.name
+  account_tier             = "Standard"
+  account_replication_type = "GRS"
+}
+
+resource "azurerm_storage_container" "data_storage_container" {
+  name                    = "data"
+  storage_account_name    = azurerm_storage_account.data_storage_account.name
+  container_access_type   = "private"  
+}
